@@ -1,4 +1,8 @@
+#define PDC_DLL_BUILD 1
+
 #include "curses.h"
+#include "curspriv.h"
+#include "panel.h"
 #include <stdlib.h>
 #include <time.h>
 

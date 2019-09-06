@@ -15,43 +15,32 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="curses.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="curspriv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\course files\pdcurses\windows_console\curses.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Header.h">
+    <ClInclude Include="curses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="pdcurses.dll">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="pdcurses.exp">
+      <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="pdcurses.lib">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files</Filter>
     </Library>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="firework.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="TextEdit.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

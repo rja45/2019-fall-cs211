@@ -1,3 +1,8 @@
+#define PDC_DLL_BUILD 1
+#define COLS 40
+#define LINES 20
+#define stdscr 0
+
 #include "curses.h"
 #include <stdlib.h>
 #include <time.h>
