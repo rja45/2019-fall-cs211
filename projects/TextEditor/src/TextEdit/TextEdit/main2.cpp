@@ -2,6 +2,7 @@
 #define WINCOLORS 1
 #define PROMPTCOLORS 2
 #define ESCAPE 27
+#define WINDOWTEXT 3
 
 
 #include "curses.h"
@@ -85,6 +86,8 @@ init_pair(WINCOLORS, COLOR_BLUE, COLOR_WHITE);// Blue text on a white screen for
 
 init_pair(PROMPTCOLORS, COLOR_WHITE, COLOR_RED);// White text on a red screen for Prompt Colors
 
+init_pair(WINDOWTEXT, COLOR_WHITE, COLOR_BLUE);// White text on a blue background for Window Text
+
 bkgd(COLOR_PAIR(WINCOLORS));// Initialize the background with WINCOLORS
 
 
@@ -128,7 +131,14 @@ for (int i = 0; i < num_rows; i++)
 }
 
 //Footer message
-mvaddstr(num_rows - 2, 3, "ESC = Quit Program | CTRL+S = Save | CTRL+L = Load");
+wattron(main_window, COLOR_PAIR(WINDOWTEXT)); //CHANGES COLOR FOR PROMPT
+
+mvaddstr(num_rows-1, 3, "ESC = Quit Program | CTRL+S = Save | CTRL+L = Load");
+
+wattroff(main_window, COLOR_PAIR(WINDOWTEXT)); //CHANGES COLOR BACK TO WINCOLORS
+
+
+//mvaddstr(num_rows - 2, 3, "ESC = Quit Program | CTRL+S = Save | CTRL+L = Load");
 
 //sets cursor initial position
 wmove(main_window, 3, 3);
