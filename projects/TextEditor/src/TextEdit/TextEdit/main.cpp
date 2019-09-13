@@ -19,6 +19,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -34,45 +35,50 @@ void draw_centered(WINDOW* win, int max_y, int max_x, string text);
 int main(void) {
 
 	//////////////////////////////////          This is where the window is built      ////////////////////////
-
 		//create variables
-	int term_cols = 0;
-	int term_rows = 0;
+	int term_cols = 120;
+	int term_rows = 30;
+	int win_cols = 0;
+	int win_fcol = 0;
+	int win_frow = 0;
+	int win_rows = 0;
+
 	int curs_x = 0;
 	int curs_y = 0;
 	vector <string> inputbuffer;
+
 
 	//initialize the terminal
 	initscr();
 
 	//Resize for initial size
-	resize_term(30, 120);
-	getmaxyx(stdscr, term_rows, term_cols);
+	resize_term(term_rows, term_cols);
+	
 
-
+	win_cols = term_cols - 4;
+	win_fcol = 2;
+	win_frow = 2;
+	win_rows = term_rows - 4;
 	//initialize the main window
-	WINDOW* main_window = newwin((term_rows - 4), (term_cols - 4), 2, 2);
+	WINDOW* main_window = newwin(win_rows, win_cols, win_frow, win_fcol);
 
 	//Set input
-	nl();
+	
 
-	//cbreak();	
+	cbreak();	
 
-	keypad(stdscr, true);
-
-	//keypad(main_window, true);
-
-	//raw();
+	keypad(main_window, true);
 
 	//Set Scrolling
 
 	scrollok(main_window, true);
 
-	wsetscrreg(main_window, term_rows - 4, term_cols - 4);
+	wsetscrreg(main_window, win_rows, win_cols);
 
 	//Set cursor visibility
-	curs_set(2);
+	curs_set(true);
 
+	
 	//turn off keyboard echo
 	noecho();
 
@@ -120,14 +126,14 @@ int main(void) {
 	//add Welcome String to the screen
 	attron(COLOR_PAIR(TERMTEXT)); //CHANGES COLOR FOR PROMPT
 
-	mvaddstr(0, 3, "Welcome to the Airth Text Editor!");
+	mvprintw(0, 3, "Welcome to the Airth Text Editor!");
 
 	//attroff( COLOR_PAIR(TERMCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
 
 	//Footer message
 	//attron(COLOR_PAIR(WINDOWTEXT)); //CHANGES COLOR FOR PROMPT
 
-	mvaddstr(term_rows - 1, 3, "ESC - Quit | CTRL+S -Save File | CTRL+L -Load File | CTRL+N -New File");
+	mvprintw(term_rows - 1, 3, "ESC - Quit | CTRL+S -Save File | CTRL+L -Load File | CTRL+N -New File");
 
 	attroff(COLOR_PAIR(TERMTEXT)); //CHANGES COLOR BACK TO WINCOLORS
 
@@ -136,8 +142,9 @@ int main(void) {
 
 
 //sets cursor initial position
-//wmove(main_window, 3, 3);
-//wrefresh(main_window);
+wmove(main_window, curs_y, curs_x);
+refresh();
+wrefresh(main_window);
 
 ///////////////////////         This is where the input characters get handled           /////////////////
 //set whether user wants to quit
@@ -145,55 +152,82 @@ int main(void) {
 
 	//get input from keyboard
 
-	char input = wgetch(main_window);
+	int input = wgetch(main_window);
 
 	while (!quit) {
-
+		getyx(main_window, curs_y, curs_x);
 		switch (input) {
 		case ESCAPE:
 			//changes color for prompt
 			attron(COLOR_PAIR(PROMPTCOLORS));
 			//exit prompt print
-			mvaddstr(term_rows - 1, term_cols - 40, "Are you sure you want to quit?");
+			mvprintw(term_rows - 1, term_cols - 40, "Are you sure you want to quit?");
 
 			quit = confirm();
 
-			attron(COLOR_PAIR(TERMCOLORS));
+			attroff(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
+			
+			attron(COLOR_PAIR(TERMTEXT));
 
-			border(ACS_BLOCK, ACS_BLOCK, ACS_BLOCK, ACS_BLOCK,
-				ACS_BLOCK, ACS_BLOCK, ACS_BLOCK, ACS_BLOCK);
+			mvprintw(term_rows - 1, term_cols - 45, "                                        ");
 
-			attroff(COLOR_PAIR(TERMCOLORS));
+			attroff(COLOR_PAIR(TERMTEXT));
 
-			mvaddstr(term_rows - 1, term_cols - 45, "Would you like to save your file? Y or N");
+			//changes color for prompt
+			attron(COLOR_PAIR(PROMPTCOLORS));
+
+			mvprintw(term_rows - 1, term_cols - 45, "Would you like to save your file? Y or N");
+			
 
 			attroff(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
 
-			attron(COLOR_PAIR(TERMCOLORS));
-
-			border(ACS_BLOCK, ACS_BLOCK, ACS_BLOCK, ACS_BLOCK,
-				ACS_BLOCK, ACS_BLOCK, ACS_BLOCK, ACS_BLOCK);
-
-			attroff(COLOR_PAIR(TERMCOLORS));
+			
 
 			if (confirm()) {
-				clear();
-				attron(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR FOR PROMPT
-				mvaddstr(((term_rows / 2) - 2), ((term_cols / 2) - 12), "Your file has been saved!!");
+				//changes color for prompt
+				attron(COLOR_PAIR(PROMPTCOLORS));
+
+				//exit prompt print
+				mvprintw(term_rows - 1, term_cols - 40, "Your file has been saved!");
+
 				attroff(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
+
+				attron(COLOR_PAIR(TERMTEXT));
+
+				mvprintw(term_rows - 1, term_cols - 45, "                                           ");
+
+				attroff(COLOR_PAIR(TERMTEXT));
+
 			}
+			else
+			{
+				attron(COLOR_PAIR(PROMPTCOLORS));
+
+				
+				mvprintw(term_rows - 1, term_cols - 40, "Your file has not been saved!");
+
+				attroff(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
+
+				attron(COLOR_PAIR(TERMTEXT));
+
+				mvprintw(term_rows - 1, term_cols - 45, "                                           ");
+
+				attroff(COLOR_PAIR(TERMTEXT));
+			}
+				
+			
 			break;
 
 		case SAVE:
 			wattron(main_window, COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR FOR PROMPT
 
-			mvaddstr(term_rows - 2, term_cols - 45, "Would you like to save your file? Y or N");
+			mvprintw(term_rows - 2, term_cols - 45, "Would you like to save your file? Y or N");
 
 			wattroff(main_window, COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
 			wrefresh(main_window);
 			if (confirm()) {
 				wattron(main_window, COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR FOR PROMPT
-				mvaddstr(((term_rows / 2) - 2), ((term_cols / 2) - 12), "Your file has been saved!!");
+				mvprintw(((term_rows / 2) - 2), ((term_cols / 2) - 12), "Your file has been saved!!");
 				wattroff(main_window, COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
 			}
 			break;
@@ -201,19 +235,17 @@ int main(void) {
 		case LOAD:
 			attron(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR FOR PROMPT
 
-			mvaddstr(term_rows - 2, term_cols - 45, "Would you like to load a file? Y or N");
+			mvprintw(term_rows - 2, term_cols - 45, "Would you like to load a file? Y or N");
 
 			attroff(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
-			//wrefresh(main_window);
 			break;
 
 		case NEW_FILE:
 			attron(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR FOR PROMPT
 
-			mvaddstr(term_rows, term_cols - 45, "Would you like to make a new file? Y or N");
+			mvprintw(term_rows, term_cols - 45, "Would you like to make a new file? Y or N");
 
 			attroff(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
-			//refresh(main_window);
 			break;
 
 		case KEY_RESIZE:
@@ -240,31 +272,82 @@ int main(void) {
 			break;
 
 
-		case KEY_LEFT:
+		case (KEY_LEFT):
 
-			getyx(main_window, curs_y, curs_x);
-			move(curs_y, curs_x - 1);
-			//refresh();
-			getch();
+			//checks if cursor is at the left edge and only advances it to above line last first position if true
+			if (curs_x == 0 && curs_y > 0)
+			{
+				
+				wmove(main_window, curs_y - 1, win_cols-1);
+			}
+			//otherwise the cursor is just moved leftward 1 position
+			else {
+				wmove(main_window, curs_y, curs_x-1);
+			}
+			
 			break;
 
+		case (KEY_RIGHT):
+
+			//checks if cursor is at the right edge and only advances it to below line first position if true
+			if (curs_x == win_cols-1 && curs_y < win_rows-1)
+			{
+				wmove(main_window, curs_y + 1, win_fcol-1);
+			}
+			//otherwise the cursor is just moved rightward 1 position
+			else {
+				wmove(main_window, curs_y, curs_x + 1);
+			}
+			
+			break;
+
+		case (KEY_UP):
+
+			if (curs_y == 0) 
+			{
+				wscrl(main_window, +-1);
+			}
+			wmove(main_window, curs_y - 1, curs_x);
+
+			break;
+
+		case (KEY_DOWN):			
+
+			if (curs_y == win_rows-1)
+			{
+				wscrl(main_window, + 1);
+			}
+			wmove(main_window, curs_y + 1, curs_x);
+			break;
 
 
 		default:
-
-			waddch(main_window, input);
-			input = wgetch(main_window);
+			waddch(main_window, input);			
 			break;
 		}
 
+		
 
 
+		wrefresh(main_window);
 
+		refresh();	
+		
+		input = wgetch(main_window);	
 
 
 	}
+	//changes color for prompt
+	attron(COLOR_PAIR(PROMPTCOLORS));
 
-	char response = getch();
+
+	//any key to exit prompt
+	mvprintw(term_rows - 1, term_cols - 45, "Press any key to escape");
+
+
+	attroff(COLOR_PAIR(PROMPTCOLORS)); //CHANGES COLOR BACK TO WINCOLORS
+	wrefresh(main_window);
+	wgetch(main_window);
 	endwin();
 
 }
