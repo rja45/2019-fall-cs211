@@ -1,0 +1,5 @@
+Hi my name is Robert Airth.
+
+I have made my text editor load files.
+
+I have also made my text editor have scrolling functionality. 
