@@ -35,3 +35,22 @@ https://pubs.opengroup.org/onlinepubs/7908799/xcurses/curses.h.html
 
 //Ncurses Programming Guide
 http://www.cs.ukzn.ac.za/~hughm/os/notes/ncurses.html#window
+
+//vector::push_back
+http://www.cplusplus.com/reference/vector/vector/push_back/
+
+//How to empty a char array?
+https://stackoverflow.com/questions/1559487/how-to-empty-a-char-array
+
+// How do I create an EXE file in Visual Studio 2019
+https://social.msdn.microsoft.com/Forums/en-US/771d49ad-ceac-4abb-91ba-ddb6dd453702/how-do-i-create-an-exe-file-in-visual-studio-2019?forum=visualstudiogeneral
+
+//Find the size of a string pointed by a pointer
+https://stackoverflow.com/questions/13551017/find-the-size-of-a-string-pointed-by-a-pointer
+
+//Command line arguments in C/C++
+https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
+
+//Debugging with command-line parameters in Visual Studio
+https://stackoverflow.com/questions/298708/debugging-with-command-line-parameters-in-visual-studio
+
