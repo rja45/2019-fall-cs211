@@ -47,4 +47,4 @@ tens of links per hour and a small fraction of them actually proved to be useful
 need to really work on making more commits even though my code may not be working or may not be the way I want it.
 Messing around with my code without using git is proving to cause continual problems for me.
 
-![milestone2demo](Milestone2.gif)
+![Milestone2Demo](https://github.com/rja45/2019-fall-cs211/blob/master/projects/TextEditor/docs/Milestone02.gif)
