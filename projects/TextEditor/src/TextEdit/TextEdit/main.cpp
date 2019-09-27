@@ -81,6 +81,7 @@ int main(int argc, char* argv[])
 	output_ledge = 0;
 	output_bedge = win_rows;
 	output_tedge = 0;
+	buffer.push_back(vector<int>{});
 
 	//initialize the main window
 	WINDOW* main_window = newwin(win_rows, win_cols, win_frow, win_fcol);
@@ -143,14 +144,6 @@ int main(int argc, char* argv[])
 	mvprintw(0, 3, "Welcome to the Airth Text Editor!    | ESC - Quit |");
 	mvprintw(term_rows - 1, 3, "CTRL+S -Save File | CTRL+L -Load File | CTRL+N -New File");
 	attroff(COLOR_PAIR(TERMTEXT));
-
-
-	//create buffer vectors to same size as window cols and rows.
-	buffer.resize(300);
-	for (int i = 0; i < 300; i++)
-	{
-		buffer[i].resize(600);
-	}
 	
 
 	if (argc >= 2)
@@ -186,16 +179,7 @@ int main(int argc, char* argv[])
 		{
 			int copy_y = 0;
 			int copy_x = 0;
-
-			for (int i = 0; i < buffer.size(); i++)
-			{
-				{
-					for (int j = 0; j < buffer[i].size(); j++)
-					{
-						buffer[i][j] = ' ';
-					}
-				}
-			}
+			
 
 
 			while (!inFile.eof())
@@ -204,18 +188,24 @@ int main(int argc, char* argv[])
 
 				if (fileChar == 10)
 				{
-					buffer[copy_y][copy_x] = fileChar;
+					buffer[copy_y].push_back(fileChar);
+					buffer.push_back(vector<int>{});
 					copy_y++;
+					if(vector_x<copy_x)
+					{
+						vector_x = copy_x;
+					}
 					copy_x = 0;
 				}
 				else
 				{
-					buffer[copy_y][copy_x] = fileChar;
+					buffer[copy_y].push_back(fileChar);
 					copy_x++;
 				}
 
-
 			}
+			
+			vector_y = copy_y;
 
 			attron(COLOR_PAIR(TERMTEXT));
 
