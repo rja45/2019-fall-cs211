@@ -32,6 +32,7 @@ using namespace std;
 
 ////////////////////////////////          Function Prototypes            ////////////////////////////////
 bool confirm(void);
+void printBuffer(WINDOW* win, vector<vector <int> > buff, int frow, int lrow, int fcol, int lcol);
 
 
 //******************************            Main Function                  *******************************
@@ -56,6 +57,8 @@ int main(int argc, char* argv[])
 	int output_tedge = 0;
 	int vector_y = 0;
 	int vector_x = 0;
+	int buffer_max_y = 0;
+	int buffer_max_x = 0;
 	string filename;
 	char fname[30];
 	char fileChar;
@@ -193,19 +196,23 @@ int main(int argc, char* argv[])
 					copy_y++;
 					if(vector_x<copy_x)
 					{
-						vector_x = copy_x;
+						buffer_max_x = copy_x;
 					}
 					copy_x = 0;
 				}
 				else
 				{
+					if (vector_x < copy_x)
+					{
+						buffer_max_x = copy_x;
+					}
 					buffer[copy_y].push_back(fileChar);
 					copy_x++;
 				}
 
 			}
 			
-			vector_y = copy_y;
+			buffer_max_y = copy_y;
 
 			attron(COLOR_PAIR(TERMTEXT));
 
@@ -235,36 +242,13 @@ int main(int argc, char* argv[])
 
 		}
 	}
-	//if there is no file to load upon startup, the vector is initialized with all spaces
-	else
-	{
-		//initialize buffer vector with a space/blank in every position
-		for (int i = 0; i < buffer.size(); i++)
-		{
-			{
-				for (int j = 0; j < buffer[i].size(); j++)
-				{
-					buffer[i][j] = ' ';
-				}
-			}
-		}
-	}
 
 
 		//print out the buffer to the screen based on window size
-		for (int i = 0; i < output_bedge; i++)
-		{
+	printBuffer(main_window, buffer, output_tedge, output_bedge, output_ledge, output_redge);
 
-			for (int j = 0; j < output_redge; j++)
-			{
-				mvwaddch(main_window, screen_y, screen_x, buffer[i][j]);
-				screen_x++;
-			}
-			screen_x = 0;
-			screen_y++;
-		}
-		screen_y = 0;
-		screen_x = 0;
+
+	
 
 		//sets cursor initial position	
 		wmove(main_window, curs_y, curs_x);
@@ -317,18 +301,7 @@ int main(int argc, char* argv[])
 				output_bedge = win_rows - 1;
 
 				//re-print all text from the buffer onto the screen with the new dimensions
-				for (int i = output_tedge; i < output_bedge; i++)
-				{
-
-					for (int j = output_ledge; j < output_redge; j++)
-					{
-						mvwaddch(main_window, screen_y, screen_x, buffer[i][j]);
-						screen_x++;
-					}
-					screen_y++;
-				}
-				screen_y = 0;
-				screen_x = 0;
+				printBuffer(main_window, buffer, output_tedge, output_bedge, output_ledge, output_redge);
 
 				wmove(main_window, curs_y, curs_x);
 
@@ -549,36 +522,32 @@ int main(int argc, char* argv[])
 						int copy_y = 0;
 						int copy_x = 0;
 
-						for (int i = 0; i < buffer.size(); i++)
-						{
-							{
-								for (int j = 0; j < buffer[i].size(); j++)
-								{
-									buffer[i][j] = ' ';
-								}
-							}
-						}
-
-
 						while (!inFile.eof())
 						{
 							inFile.get(fileChar);
 
 							if (fileChar == 10)
 							{
-								buffer[copy_y][copy_x] = fileChar;
+								buffer[copy_y].push_back(fileChar);
+								buffer.push_back(vector<int>{});
 								copy_y++;
+								if (vector_x < copy_x)
+								{
+									buffer_max_x = copy_x;
+								}
 								copy_x = 0;
 							}
 							else
 							{
-								buffer[copy_y][copy_x] = fileChar;
+								buffer[copy_y].push_back(fileChar);
 								copy_x++;
 							}
-
+							
+							buffer_max_y = copy_y;
 
 						}
 
+						
 						attron(COLOR_PAIR(TERMTEXT));
 
 						mvprintw(term_rows - 1, term_cols - 50, "                                           ");
@@ -660,16 +629,15 @@ int main(int argc, char* argv[])
 			case (KEY_RIGHT):
 
 				//if cursor is at right edge, with more to display, the text shifts leftward and cursor doesn't move.
-				if (curs_x == win_cols - 1 && output_redge < buffer[curs_y].size() - 1)
+				if (curs_x == win_cols - 1 && output_redge < buffer_max_x-1)
 				{
 					output_redge++;
 					output_ledge++;
 					break;
 				}
-				//if cursor is at the right edge, with nothing more to display, characters are created and displayed
-				else if (curs_x == win_cols - 1 && output_redge == buffer[curs_y].size() - 1)
+				//if cursor is at the right edge, with nothing more to display nothing happens
+				else if (curs_x == win_cols - 1 && output_redge == buffer_max_x-1)
 				{
-					buffer[curs_y].push_back(' ');
 					output_redge++;
 					output_ledge++;
 					break;
@@ -681,13 +649,14 @@ int main(int argc, char* argv[])
 					break;
 				}
 
-
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 			case (KEY_UP):
 				//if cursor is at the top edge, with more to display, the text shifts downward and cursor doesn't move.
 				if (curs_y == 0 && output_tedge > 0) {
 					output_tedge--;
 					output_bedge--;
+					curs_x = buffer[vector_y].size()-1;
 					break;
 				}
 				//if cursor is at the top edge, with nothing more to display, nothing happens.
@@ -704,29 +673,24 @@ int main(int argc, char* argv[])
 
 
 			case (KEY_DOWN):
-				//if cursor is at the bottom edge, with more to display, the text shifts upward and the cursor doesn't move. 
-				if (curs_y == win_rows - 1 && curs_y < buffer.size() - 1)
+				//if cursor is at the bottom edge, with more to display, the text shifts upward and the cursor doesn't move vertically. 
+				if (curs_y == win_rows - 1 && output_bedge < buffer_max_y - 1)
 				{
+					curs_x = buffer[vector_y+1].size() - 1;
 					output_tedge++;
 					output_bedge++;
 					break;
 				}
-				//if cursor is at the bottom edge, with nothing more to display, a row is created and initialized and the text moves up, cursor doesn't move.
-				else if (curs_y == win_rows - 1 && output_tedge == buffer.size() - 1)
-				{
-					buffer.push_back(vector <int>(600));
-					for (int i = 0; i < buffer[win_cols].size(); i++)
-					{
-						buffer[curs_y][i] = ' ';
-					}
-					output_tedge++;
-					output_bedge++;
+				//if cursor is at the bottom edge, with nothing more to display, nothing happens
+				else if (curs_y == win_rows - 1 && output_bedge == buffer_max_y - 1)
+				{					
 					break;
 				}
 				//in all other cases, the cursor moves downward in the window
 				else
 				{
 					curs_y++;
+					curs_x = buffer[vector_y+1].size() - 1;
 					break;
 				}
 
@@ -821,19 +785,8 @@ int main(int argc, char* argv[])
 
 
 
-			for (int i = output_tedge; i < output_bedge; i++)
-			{
+			printBuffer(main_window, buffer, output_tedge, output_bedge, output_ledge, output_redge);
 
-				for (int j = output_ledge; j < output_redge; j++)
-				{
-					mvwaddch(main_window, screen_y, screen_x, buffer[i][j]);
-					screen_x++;
-				}
-				screen_x = 0;
-				screen_y++;
-			}
-			screen_y = 0;
-			screen_x = 0;
 
 			wmove(main_window, curs_y, curs_x);
 
@@ -894,14 +847,24 @@ void windowResize(WINDOW* win, int rows, int cols) {
 
 }
 
+void printBuffer(WINDOW* win, vector<vector <int> > buff, int frow, int lrow, int fcol, int lcol)
+{
+	int scrn_y = 0;
 
-//for (int i = 0; i < buffer.size(); i++) 
-//{
-	//for (int j = 0; j < buffer[i].size(); j++)
-	//{
-		//if (buffer[i][j] > 0 && buffer[i][j] < 256)
-		//{
-		//	mvwaddch(main_window, i, j, buffer[i][j]);
-		//}
-	//}
-//}
+	int scrn_x = 0;
+	
+	for (int i = frow; i < buff.size() && i < lrow; i++)
+	{
+		
+		for (int j = fcol; j < buff[i].size() && j < lcol; j++)
+		{
+			mvwaddch(win, scrn_y, scrn_x, buff[i][j]);
+			scrn_x++;
+		}
+		scrn_x = 0;
+		scrn_y++;
+	}
+	
+}
+
+
