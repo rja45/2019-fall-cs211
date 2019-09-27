@@ -643,7 +643,7 @@ int main(int argc, char* argv[])
 					break;
 				}
 				//in all other cases, the cursor moves rightward in the window
-				else
+				else if (curs_x < buffer[vector_y].size()-1)
 				{
 					curs_x++;
 					break;
@@ -656,7 +656,7 @@ int main(int argc, char* argv[])
 				if (curs_y == 0 && output_tedge > 0) {
 					output_tedge--;
 					output_bedge--;
-					curs_x = buffer[vector_y].size()-1;
+					curs_x = buffer[(vector_y - 1)].size() - 1;
 					break;
 				}
 				//if cursor is at the top edge, with nothing more to display, nothing happens.
@@ -667,6 +667,7 @@ int main(int argc, char* argv[])
 				//in all other cases, the cursor moves upward in the window.
 				else
 				{
+					curs_x = buffer[(vector_y - 1)].size() - 1;
 					curs_y--;
 					break;
 				}
@@ -676,7 +677,7 @@ int main(int argc, char* argv[])
 				//if cursor is at the bottom edge, with more to display, the text shifts upward and the cursor doesn't move vertically. 
 				if (curs_y == win_rows - 1 && output_bedge < buffer_max_y - 1)
 				{
-					curs_x = buffer[vector_y+1].size() - 1;
+					curs_x = buffer[(vector_y+1)].size() - 1;
 					output_tedge++;
 					output_bedge++;
 					break;
@@ -686,11 +687,14 @@ int main(int argc, char* argv[])
 				{					
 					break;
 				}
+				else if (curs_y == buffer_max_y)
+				{
+					break;
+				}
 				//in all other cases, the cursor moves downward in the window
 				else
 				{
-					curs_y++;
-					curs_x = buffer[vector_y+1].size() - 1;
+					curs_y++;					
 					break;
 				}
 
