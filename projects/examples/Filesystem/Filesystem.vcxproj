@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{523F8D5E-09EA-4AB2-984F-125BF317E74A}</ProjectGuid>
-    <RootNamespace>DesignIdeas</RootNamespace>
+    <ProjectGuid>{72B69D8E-EFEF-4EDD-9E3E-A989C9DED32C}</ProjectGuid>
+    <RootNamespace>Filesystem</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,22 +125,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="curses.h" />
-    <ClInclude Include="curspriv.h" />
-    <ClInclude Include="panel.h" />
-    <ClInclude Include="UiComponents\Interactable.hpp" />
-    <ClInclude Include="UiComponents\Label.hpp" />
-    <ClInclude Include="UiComponents\TextBox.hpp" />
-    <ClInclude Include="UiComponents\UiComponent.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="pdcurses.dll" />
-    <None Include="pdcurses.exp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="pdcurses.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
