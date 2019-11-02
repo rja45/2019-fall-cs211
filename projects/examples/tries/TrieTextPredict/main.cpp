@@ -7,10 +7,11 @@ int main(void)
 {
     Trie dictionary{};
 
-    string line = "";
-	dictionary.addWord("abc");
+ 
+	dictionary.addWord("abc");	
 	dictionary.addWord("aabc");
 	dictionary.addWord("def");
+
 	vector<string> result = dictionary.search("a");
 
 	//expected result:  "abc", "aabc"

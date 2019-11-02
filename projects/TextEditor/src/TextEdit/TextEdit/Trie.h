@@ -74,16 +74,15 @@ public:
 			{
 				return wordsFound;
 			}
- 		}	
+		}	
 
 		//if the end-node of the prefix has a sentinel child,
 		//then the prefix is a complete word. The prefix in 
 		//tempWord is then added to the vector of wordsFound.
-
-		//if (node->hasChild('$')==true);
-		//{
-		//	wordsFound.push_back(tempWord);
-		//}
+		if (node->hasChild('$'));
+		{
+			wordsFound.push_back(tempWord);
+		}
 		
 
 		//once the end-node for the prefix is the current node,
@@ -123,28 +122,27 @@ public:
 		TrieNode* node = _root;
 
 		string tempWord = word;
-		
-			for (auto c : word)
-			{
-				if (node->hasChild(c))
-				{
-					node = node->getChild(c);
-				}
-			}	
 
-			for (auto child : node->getChildren())
+		for (auto c : word)
+		{
+			if (node->hasChild(c))
 			{
-				if (child.first == '$')
-				{
-					wordsFound.push_back(tempWord);
-				}
-
-				else
-				{
-					searchHelper(word + child.first, wordsFound);
-				}
+				node = node->getChild(c);
 			}
-		
+		}	
+
+		for (auto child : node->getChildren())
+		{
+			if (child.first == '$')
+			{
+				wordsFound.push_back(tempWord);
+			}
+
+			else
+			{
+				searchHelper(word + child.first, wordsFound);
+			}
+		}
 	}
 };
 

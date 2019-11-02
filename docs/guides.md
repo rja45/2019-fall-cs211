@@ -54,3 +54,8 @@ https://www.geeksforgeeks.org/command-line-arguments-in-c-cpp/
 //Debugging with command-line parameters in Visual Studio
 https://stackoverflow.com/questions/298708/debugging-with-command-line-parameters-in-visual-studio
 
+//Building a Trie with Classes in C++
+https://codereview.stackexchange.com/questions/199643/simple-trie-class-in-c
+
+
+
